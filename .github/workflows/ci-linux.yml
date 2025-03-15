@@ -70,8 +70,6 @@ jobs:
           repository: ${{ inputs.repository || github.repository }}
           ref: ${{ inputs.ref }}
           submodules: recursive
-      - name: Fix dubious ownership of /github/workspace
-        run: git config --global --add safe.directory /github/workspace
       - name: Package and test application in container
         uses: shiftkey/desktop-ubuntu-amd64-packaging@ea7b7a6a940a6b907b160b946439c5c7a516f9f1
       - name: Upload output artifacts
