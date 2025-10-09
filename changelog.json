@@ -1,5 +1,6 @@
 {
   "releases": {
+    "3.5.4-test1": ["[Fixed] Reverted back to Electron v36.1.0"],
     "3.5.3": [
       "[Added] Add Ptyxis shell integration - #20963. Thanks @logonoff!",
       "[Fixed] Copilot message generation in progress message is announced to screen readers - #21008",
