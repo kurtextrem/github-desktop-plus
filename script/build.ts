@@ -176,9 +176,7 @@ function packageApp() {
   // this setting only works for macOS and Windows, so let's clear it now to ensure
   // the app is working as expected
   const icon =
-    process.platform === 'linux'
-      ? undefined
-      : join(iconPath, 'icon-logo')
+    process.platform === 'linux' ? undefined : join(iconPath, 'icon-logo')
 
   return packager({
     name: getExecutableName(),
@@ -383,8 +381,9 @@ function copyDependencies() {
       ? 'desktop-credential-helper-trampoline.exe'
       : 'desktop-credential-helper-trampoline'
 
-  const desktopCredentialHelperFile = `git-credential-desktop${process.platform === 'win32' ? '.exe' : ''
-    }`
+  const desktopCredentialHelperFile = `git-credential-desktop${
+    process.platform === 'win32' ? '.exe' : ''
+  }`
 
   cpSync(
     path.resolve(trampolineSource, desktopCredentialHelperTrampolineFile),
