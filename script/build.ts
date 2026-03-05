@@ -35,10 +35,11 @@ import {
   getDistArchitecture,
   getDistRoot,
   getExecutableName,
-  getIconFileName,
+  getIconDirectory,
   isPublishable,
 } from './dist-info'
 
+import assert from 'assert'
 import {
   cpSync,
   existsSync,
@@ -49,6 +50,7 @@ import {
   unlinkSync,
   writeFileSync,
 } from 'fs'
+import { join } from 'path'
 import { updateLicenseDump } from './licenses/update-license-dump'
 import { verifyInjectedSassVariables } from './validate-sass/validate-all'
 
@@ -164,12 +166,19 @@ function packageApp() {
     )
   }
 
+  const iconPath = getIconDirectory()
+  const assetsCarPath = join(iconPath, 'Assets.car')
+  assert(
+    existsSync(assetsCarPath),
+    `Unable to find Assets.car at ${assetsCarPath}`
+  )
+
   // this setting only works for macOS and Windows, so let's clear it now to ensure
   // the app is working as expected
   const icon =
     process.platform === 'linux'
       ? undefined
-      : path.join(projectRoot, 'app', 'static', 'logos', getIconFileName())
+      : join(iconPath, 'icon-logo')
 
   return packager({
     name: getExecutableName(),
@@ -178,6 +187,7 @@ function packageApp() {
     asar: false, // TODO: Probably wanna enable this down the road.
     out: getDistRoot(),
     icon,
+    extraResource: [assetsCarPath],
     dir: outRoot,
     overwrite: true,
     tmpdir: false,
@@ -373,9 +383,8 @@ function copyDependencies() {
       ? 'desktop-credential-helper-trampoline.exe'
       : 'desktop-credential-helper-trampoline'
 
-  const desktopCredentialHelperFile = `git-credential-desktop${
-    process.platform === 'win32' ? '.exe' : ''
-  }`
+  const desktopCredentialHelperFile = `git-credential-desktop${process.platform === 'win32' ? '.exe' : ''
+    }`
 
   cpSync(
     path.resolve(trampolineSource, desktopCredentialHelperTrampolineFile),

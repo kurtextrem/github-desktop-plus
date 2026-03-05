@@ -120,6 +120,7 @@ const allMenuIds: ReadonlyArray<MenuIDs> = [
   'open-in-shell',
   'push',
   'pull',
+  'fetch',
   'branch',
   'repository',
   'go-to-commit-message',
@@ -172,6 +173,7 @@ function getRepositoryMenuBuilder(state: IAppState): MenuStateBuilder {
   let hasConflicts = false
   let hasPublishedBranch = false
   let networkActionInProgress = false
+  let hasRemote = false
   let tipStateIsUnknown = false
   let branchIsUnborn = false
   let rebaseInProgress = false
@@ -224,6 +226,7 @@ function getRepositoryMenuBuilder(state: IAppState): MenuStateBuilder {
     }
 
     networkActionInProgress = selectedState.state.isPushPullFetchInProgress
+    hasRemote = selectedState.state.remote !== null
 
     const { conflictState, workingDirectory } = selectedState.state.changesState
 
@@ -320,6 +323,7 @@ function getRepositoryMenuBuilder(state: IAppState): MenuStateBuilder {
       'pull',
       hasPublishedBranch && !networkActionInProgress
     )
+    menuStateBuilder.setEnabled('fetch', hasRemote && !networkActionInProgress)
     menuStateBuilder.setEnabled(
       'create-branch',
       !tipStateIsUnknown && !branchIsUnborn && !rebaseInProgress
@@ -381,6 +385,7 @@ function getRepositoryMenuBuilder(state: IAppState): MenuStateBuilder {
 
     menuStateBuilder.disable('push')
     menuStateBuilder.disable('pull')
+    menuStateBuilder.disable('fetch')
     menuStateBuilder.disable('compare-to-branch')
     menuStateBuilder.disable('compare-on-github')
     menuStateBuilder.disable('branch-on-github')
