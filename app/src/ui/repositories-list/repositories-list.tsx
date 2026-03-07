@@ -179,6 +179,10 @@ export class RepositoriesList extends React.Component<
       const branchState = this.props.dispatcher.getBranchesState(
         item.repository
       )
+      if (branchState.allBranches.length === 0) {
+        this.props.dispatcher.refreshRepository(item.repository)
+        return false
+      }
       const defaultBranch = branchState.defaultBranch
       return defaultBranch === null || item.branchName !== defaultBranch.name
     }
