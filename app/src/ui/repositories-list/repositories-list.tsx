@@ -27,8 +27,16 @@ import { SectionFilterList } from '../lib/section-filter-list'
 import { assertNever } from '../../lib/fatal-error'
 import { IAheadBehind } from '../../models/branch'
 import { ShowBranchNameInRepoListSetting } from '../../models/show-branch-name-in-repo-list'
+import { throttle } from 'lodash'
 
 const BlankSlateImage = encodePathAsUrl(__dirname, 'static/empty-no-repo.svg')
+
+const refreshRepositoryThrottled = throttle(
+  async (dispatcher: Dispatcher, repository: Repository) => {
+    await dispatcher.refreshRepository(repository)
+  },
+  5000
+)
 
 interface IRepositoriesListProps {
   readonly selectedRepository: Repositoryish | null
@@ -180,7 +188,7 @@ export class RepositoriesList extends React.Component<
         item.repository
       )
       if (branchState.allBranches.length === 0) {
-        this.props.dispatcher.refreshRepository(item.repository)
+        refreshRepositoryThrottled(this.props.dispatcher, item.repository)
         return false
       }
       const defaultBranch = branchState.defaultBranch
