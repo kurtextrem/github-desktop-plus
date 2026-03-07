@@ -43,6 +43,7 @@ import { Prompts } from './prompts'
 import { Repository } from '../../models/repository'
 import { Notifications } from './notifications'
 import { Accessibility } from './accessibility'
+import { ShowBranchNameInRepoListSetting } from '../../models/show-branch-name-in-repo-list'
 import {
   ICustomIntegration,
   TargetPathArgument,
@@ -93,7 +94,7 @@ interface IPreferencesProps {
   readonly showRecentRepositories: boolean
   readonly showWorktrees: boolean
   readonly repositoryIndicatorsEnabled: boolean
-  readonly showBranchNameInRepoList: boolean
+  readonly showBranchNameInRepoList: ShowBranchNameInRepoListSetting
   readonly hideWindowOnQuit: boolean
   readonly onEditGlobalGitConfig: () => void
   readonly underlineLinks: boolean
@@ -145,7 +146,7 @@ interface IPreferencesState {
    */
   readonly existingLockFilePath?: string
   readonly repositoryIndicatorsEnabled: boolean
-  readonly showBranchNameInRepoList: boolean
+  readonly showBranchNameInRepoList: ShowBranchNameInRepoListSetting
   readonly hideWindowOnQuit: boolean
 
   readonly initiallySelectedTheme: ApplicationTheme
@@ -805,7 +806,7 @@ export class Preferences extends React.Component<
   }
 
   private onShowBranchNameInRepoListChanged = (
-    showBranchNameInRepoList: boolean
+    showBranchNameInRepoList: ShowBranchNameInRepoListSetting
   ) => {
     this.setState({ showBranchNameInRepoList })
   }

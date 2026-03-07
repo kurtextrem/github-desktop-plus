@@ -175,6 +175,10 @@ import {
   defaultUncommittedChangesStrategy,
   UncommittedChangesStrategy,
 } from '../../models/uncommitted-changes-strategy'
+import {
+  defaultShowBranchNameInRepoListSetting,
+  ShowBranchNameInRepoListSetting,
+} from '../../models/show-branch-name-in-repo-list'
 import { WorkflowPreferences } from '../../models/workflow-preferences'
 import { TrashNameLabel } from '../../ui/lib/context-menu'
 import { getDefaultDir } from '../../ui/lib/default-dir'
@@ -481,7 +485,6 @@ export const underlineLinksDefault = true
 export const showDiffCheckMarksDefault = true
 export const showDiffCheckMarksKey = 'diff-check-marks-visible'
 
-export const showBranchNameInRepoListDefault = false
 export const showBranchNameInRepoListKey = 'show-branch-name-in-repo-list'
 
 const commitMessageGenerationDisclaimerLastSeenKey =
@@ -649,7 +652,8 @@ export class AppStore extends TypedBaseStore<IAppState> {
 
   private showDiffCheckMarks: boolean = showDiffCheckMarksDefault
 
-  private showBranchNameInRepoList: boolean = showBranchNameInRepoListDefault
+  private showBranchNameInRepoList: ShowBranchNameInRepoListSetting =
+    defaultShowBranchNameInRepoListSetting
 
   private cachedRepoRulesets = new Map<number, IAPIRepoRuleset>()
 
@@ -2602,10 +2606,9 @@ export class AppStore extends TypedBaseStore<IAppState> {
       showDiffCheckMarksDefault
     )
 
-    this.showBranchNameInRepoList = getBoolean(
-      showBranchNameInRepoListKey,
-      showBranchNameInRepoListDefault
-    )
+    this.showBranchNameInRepoList =
+      getEnum(showBranchNameInRepoListKey, ShowBranchNameInRepoListSetting) ??
+      defaultShowBranchNameInRepoListSetting
 
     this.commitMessageGenerationDisclaimerLastSeen =
       getNumber(commitMessageGenerationDisclaimerLastSeenKey) ?? null
@@ -9134,10 +9137,12 @@ export class AppStore extends TypedBaseStore<IAppState> {
     }
   }
 
-  public _updateShowBranchNameInRepoList(showBranchNameInRepoList: boolean) {
+  public _updateShowBranchNameInRepoList(
+    showBranchNameInRepoList: ShowBranchNameInRepoListSetting
+  ) {
     if (showBranchNameInRepoList !== this.showBranchNameInRepoList) {
       this.showBranchNameInRepoList = showBranchNameInRepoList
-      setBoolean(showBranchNameInRepoListKey, showBranchNameInRepoList)
+      localStorage.setItem(showBranchNameInRepoListKey, showBranchNameInRepoList)
       this.emitUpdate()
     }
   }

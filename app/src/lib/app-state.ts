@@ -40,6 +40,7 @@ import { Banner } from '../models/banner'
 import { IStashEntry } from '../models/stash-entry'
 import { TutorialStep } from '../models/tutorial-step'
 import { UncommittedChangesStrategy } from '../models/uncommitted-changes-strategy'
+import { ShowBranchNameInRepoListSetting } from '../models/show-branch-name-in-repo-list'
 import { DragElement } from '../models/drag-drop'
 import { ILastThankYou } from '../models/last-thank-you'
 import {
@@ -394,8 +395,8 @@ export interface IAppState {
   /** Whether or not the user will see check marks indicating a line is included in the check in the diff */
   readonly showDiffCheckMarks: boolean
 
-  /** Whether or not to show the current branch name next to each repository in the repository list */
-  readonly showBranchNameInRepoList: boolean
+  /** Controls when to show the current branch name next to each repository in the repository list */
+  readonly showBranchNameInRepoList: ShowBranchNameInRepoListSetting
 
   /**
    * Cached repo rulesets. Used to prevent repeatedly querying the same

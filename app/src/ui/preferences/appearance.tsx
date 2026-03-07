@@ -12,6 +12,8 @@ import { Select } from '../lib/select'
 import { encodePathAsUrl } from '../../lib/path'
 import { tabSizeDefault } from '../../lib/stores/app-store'
 import { Checkbox, CheckboxValue } from '../lib/checkbox'
+import { ShowBranchNameInRepoListSetting } from '../../models/show-branch-name-in-repo-list'
+import { parseEnumValue } from '../../lib/enum'
 
 interface IAppearanceProps {
   readonly selectedTheme: ApplicationTheme
@@ -24,8 +26,10 @@ interface IAppearanceProps {
   readonly onShowRecentRepositoriesChanged: (show: boolean) => void
   readonly showWorktrees: boolean
   readonly onShowWorktreesChanged: (show: boolean) => void
-  readonly showBranchNameInRepoList: boolean
-  readonly onShowBranchNameInRepoListChanged: (value: boolean) => void
+  readonly showBranchNameInRepoList: ShowBranchNameInRepoListSetting
+  readonly onShowBranchNameInRepoListChanged: (
+    value: ShowBranchNameInRepoListSetting
+  ) => void
 }
 
 interface IAppearanceState {
@@ -216,9 +220,15 @@ export class Appearance extends React.Component<
   }
 
   private onShowBranchNameInRepoListChanged = (
-    event: React.FormEvent<HTMLInputElement>
+    event: React.FormEvent<HTMLSelectElement>
   ) => {
-    this.props.onShowBranchNameInRepoListChanged(event.currentTarget.checked)
+    const value = parseEnumValue(
+      ShowBranchNameInRepoListSetting,
+      event.currentTarget.value
+    )
+    if (value !== undefined) {
+      this.props.onShowBranchNameInRepoListChanged(value)
+    }
   }
 
   private renderRepositoryList() {
@@ -235,15 +245,17 @@ export class Appearance extends React.Component<
           }
           onChange={this.onShowRecentRepositoriesChanged}
         />
-        <Checkbox
+        <Select
           label="Show current branch name next to repository name"
-          value={
-            this.props.showBranchNameInRepoList
-              ? CheckboxValue.On
-              : CheckboxValue.Off
-          }
+          value={this.props.showBranchNameInRepoList}
           onChange={this.onShowBranchNameInRepoListChanged}
-        />
+        >
+          <option value={ShowBranchNameInRepoListSetting.Never}>Never</option>
+          <option value={ShowBranchNameInRepoListSetting.Always}>Always</option>
+          <option value={ShowBranchNameInRepoListSetting.WhenNotDefault}>
+            When not in default branch
+          </option>
+        </Select>
       </div>
     )
   }

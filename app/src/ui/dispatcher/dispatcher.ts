@@ -23,6 +23,7 @@ import {
   MultiCommitOperationConflictState,
   IMultiCommitOperationState,
   CommitOptions,
+  IBranchesState,
 } from '../../lib/app-state'
 import { assertNever, fatalError } from '../../lib/fatal-error'
 import {
@@ -103,6 +104,7 @@ import {
 } from '../../lib/stores/commit-status-store'
 import { MergeTreeResult } from '../../models/merge'
 import { UncommittedChangesStrategy } from '../../models/uncommitted-changes-strategy'
+import { ShowBranchNameInRepoListSetting } from '../../models/show-branch-name-in-repo-list'
 import { IStashEntry } from '../../models/stash-entry'
 import { WorkflowPreferences } from '../../models/workflow-preferences'
 import { resolveWithin } from '../../lib/path'
@@ -2197,6 +2199,11 @@ export class Dispatcher {
     }
   }
 
+  public getBranchesState(repository: Repository): IBranchesState {
+    const state = this.repositoryStateManager.get(repository)
+    return state.branchesState
+  }
+
   private async openOrCloneRepository(url: string): Promise<Repository | null> {
     const state = this.appStore.getState()
     const repositories = state.repositories
@@ -4191,7 +4198,9 @@ export class Dispatcher {
     return this.appStore._updateShowDiffCheckMarks(diffCheckMarks)
   }
 
-  public setShowBranchNameInRepoList(showBranchNameInRepoList: boolean) {
+  public setShowBranchNameInRepoList(
+    showBranchNameInRepoList: ShowBranchNameInRepoListSetting
+  ) {
     return this.appStore._updateShowBranchNameInRepoList(
       showBranchNameInRepoList
     )

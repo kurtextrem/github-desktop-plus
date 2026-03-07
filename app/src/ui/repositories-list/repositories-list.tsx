@@ -26,6 +26,7 @@ import { generateRepositoryListContextMenu } from '../repositories-list/reposito
 import { SectionFilterList } from '../lib/section-filter-list'
 import { assertNever } from '../../lib/fatal-error'
 import { IAheadBehind } from '../../models/branch'
+import { ShowBranchNameInRepoListSetting } from '../../models/show-branch-name-in-repo-list'
 
 const BlankSlateImage = encodePathAsUrl(__dirname, 'static/empty-no-repo.svg')
 
@@ -76,8 +77,8 @@ interface IRepositoriesListProps {
 
   readonly dispatcher: Dispatcher
 
-  /** Whether to show the branch name next to each repository */
-  readonly showBranchNameInRepoList: boolean
+  /** Controls when to show the branch name next to each repository */
+  readonly showBranchNameInRepoList: ShowBranchNameInRepoListSetting
 }
 
 interface IRepositoriesListState {
@@ -158,6 +159,33 @@ export class RepositoriesList extends React.Component<
     }
   }
 
+  private shouldShowBranchName(item: IRepositoryListItem): boolean {
+    const { showBranchNameInRepoList } = this.props
+
+    if (!(item.repository instanceof Repository) || !item.branchName) {
+      return false
+    }
+    if (showBranchNameInRepoList === ShowBranchNameInRepoListSetting.Never) {
+      return false
+    }
+    if (showBranchNameInRepoList === ShowBranchNameInRepoListSetting.Always) {
+      return true
+    }
+
+    if (
+      showBranchNameInRepoList ===
+      ShowBranchNameInRepoListSetting.WhenNotDefault
+    ) {
+      const branchState = this.props.dispatcher.getBranchesState(
+        item.repository
+      )
+      const defaultBranch = branchState.defaultBranch
+      return defaultBranch === null || item.branchName !== defaultBranch.name
+    }
+
+    assertNever(showBranchNameInRepoList, `Unknown show branch name setting`)
+  }
+
   private renderItem = (item: IRepositoryListItem, matches: IMatches) => {
     const repository = item.repository
     return (
@@ -169,7 +197,7 @@ export class RepositoriesList extends React.Component<
         aheadBehind={item.aheadBehind}
         changedFilesCount={item.changedFilesCount}
         branchName={
-          this.props.showBranchNameInRepoList ? item.branchName : undefined
+          this.shouldShowBranchName(item) ? item.branchName : undefined
         }
       />
     )
@@ -199,7 +227,7 @@ export class RepositoriesList extends React.Component<
     item: IRepositoryListItem
   ): JSX.Element | string | null => {
     const { repository, aheadBehind, changedFilesCount } = item
-    const branchName = this.props.showBranchNameInRepoList
+    const branchName = this.shouldShowBranchName(item)
       ? item.branchName
       : undefined
     const gitHubRepo =
