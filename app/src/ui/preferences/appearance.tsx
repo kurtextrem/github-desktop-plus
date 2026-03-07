@@ -253,7 +253,7 @@ export class Appearance extends React.Component<
           <option value={ShowBranchNameInRepoListSetting.Never}>Never</option>
           <option value={ShowBranchNameInRepoListSetting.Always}>Always</option>
           <option value={ShowBranchNameInRepoListSetting.WhenNotDefault}>
-            When not in default branch
+            When it's not the default branch
           </option>
         </Select>
       </div>
