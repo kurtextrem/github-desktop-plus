@@ -547,6 +547,8 @@ $overlay-background-color: rgba(0, 0, 0, 0.4);
   --pr-commented-icon-color: var(--md-fg-muted-color);
   --pr-commented-icon-background-color: #eaeef2;
 
+  --unpushed-branch-color: #{$yellow-900};
+
   --call-to-action-bubble-border-color: #{$green};
   --call-to-action-bubble-color: #{$green};
 

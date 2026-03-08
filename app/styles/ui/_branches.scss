@@ -189,7 +189,10 @@
     }
 
     &.local-only {
-      color: var(--dialog-warning-color);
+      color: var(--unpushed-branch-color);
+      .name {
+        font-weight: var(--font-weight-semibold);
+      }
     }
 
     &.disabled {
