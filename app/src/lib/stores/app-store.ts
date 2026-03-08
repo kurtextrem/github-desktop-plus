@@ -5338,6 +5338,10 @@ export class AppStore extends TypedBaseStore<IAppState> {
             theirBranch: tip.branch.upstream,
             currentBranch: tip.branch.name,
           }
+        } else {
+          throw new Error(
+            `This branch (${tip.branch.name}) has not been published yet.`
+          )
         }
 
         const title = `Pulling ${remote.name}`

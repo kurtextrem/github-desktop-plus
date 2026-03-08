@@ -506,7 +506,7 @@ export class RepositoriesList extends React.Component<
           .filter(r => r instanceof Repository)
           .map(r =>
             this.props.dispatcher.pull(r).catch(e => {
-              throw Error(`Error pulling repository ${r.name}:\n${e}`, e)
+              throw Error(`Error pulling '${r.name}' (${r.path}):\n${e}`, e)
             })
           )
       )
