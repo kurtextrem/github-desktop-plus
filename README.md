@@ -149,6 +149,16 @@ chmod +x GitHub-Desktop-Plus-*-linux-*.AppImage
 <details>
 <summary>Click to expand</summary>
 
+#### Using winget
+
+```powershell
+winget install polrivero.GitHubDesktopPlus
+```
+
+To update, run `winget upgrade polrivero.GitHubDesktopPlus` or `winget upgrade --all` to update all your winget packages.
+
+#### Manual download
+
 Download and execute the installer from the [releases page](https://github.com/pol-rivero/github-desktop-plus/releases/latest).
 
 | | **64-bit x86** | **64-bit ARM** |
