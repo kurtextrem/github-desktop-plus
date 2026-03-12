@@ -42,7 +42,11 @@ import { TitleBar, ZoomInfo, FullScreenInfo } from './window'
 import { RepositoriesList } from './repositories-list'
 import { RepositoryView } from './repository'
 import { RenameBranch } from './rename-branch'
-import { DeleteBranch, DeleteRemoteBranch } from './delete-branch'
+import {
+  CantDeleteCurrentBranch,
+  DeleteBranch,
+  DeleteRemoteBranch,
+} from './delete-branch'
 import { CloningRepositoryView } from './cloning-repository'
 import {
   Toolbar,
@@ -972,9 +976,7 @@ export class App extends React.Component<IAppProps, IAppState> {
       this.setBanner({ type: BannerType.WorktreesEnabled })
     }
 
-    if (
-      this.state.currentFoldout?.type === FoldoutType.Worktree
-    ) {
+    if (this.state.currentFoldout?.type === FoldoutType.Worktree) {
       return this.props.dispatcher.closeFoldout(FoldoutType.Worktree)
     }
 
@@ -1526,6 +1528,15 @@ export class App extends React.Component<IAppProps, IAppState> {
             dispatcher={this.props.dispatcher}
             repository={popup.repository}
             branch={popup.branch}
+            onDismissed={onPopupDismissedFn}
+          />
+        )
+      case PopupType.CantDeleteCurrentBranch:
+        return (
+          <CantDeleteCurrentBranch
+            key="cant-delete-current-branch"
+            branchToDelete={popup.branchToDelete}
+            blockedByBranch={popup.blockedByBranch}
             onDismissed={onPopupDismissedFn}
           />
         )

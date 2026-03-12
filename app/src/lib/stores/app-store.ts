@@ -24,7 +24,10 @@ import {
   ICommitContext,
   shortenSHA,
 } from '../../models/commit'
-import { DefaultCommitMessage, ICommitMessage } from '../../models/commit-message'
+import {
+  DefaultCommitMessage,
+  ICommitMessage,
+} from '../../models/commit-message'
 import {
   DiffSelection,
   DiffSelectionType,
@@ -283,6 +286,7 @@ import {
   isUsingLFS,
 } from '../git/lfs'
 import { determineMergeability } from '../git/merge-tree'
+import { listWorktrees } from '../git/worktree'
 import { reorder } from '../git/reorder'
 import { squash } from '../git/squash'
 import { stageResolvedConflictFiles } from '../git/stage'
@@ -4920,6 +4924,21 @@ export class AppStore extends TypedBaseStore<IAppState> {
         toCheckout ?? this.getBranchToCheckoutAfterDelete(branch, repository)
 
       if (branchToCheckout !== null) {
+        const worktrees = await listWorktrees(repository)
+        const branchRef = `refs/heads/${branchToCheckout.name}`
+        const inUseInAnotherWorktree = worktrees.some(
+          wt => wt.branch === branchRef && wt.path !== repository.path
+        )
+        if (inUseInAnotherWorktree) {
+          this._showPopup({
+            type: PopupType.CantDeleteCurrentBranch,
+            repository,
+            branchToDelete: branch,
+            blockedByBranch: branchToCheckout,
+          })
+          return
+        }
+
         await gitStore.performFailableOperation(() =>
           checkoutBranch(repository, branchToCheckout, gitStore.currentRemote)
         )

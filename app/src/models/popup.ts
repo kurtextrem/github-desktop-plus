@@ -113,6 +113,7 @@ export enum PopupType {
   AddWorktree = 'AddWorktree',
   RenameWorktree = 'RenameWorktree',
   DeleteWorktree = 'DeleteWorktree',
+  CantDeleteCurrentBranch = 'CantDeleteCurrentBranch',
 }
 
 interface IBasePopup {
@@ -124,6 +125,12 @@ interface IBasePopup {
 
 export type PopupDetail =
   | { type: PopupType.RenameBranch; repository: Repository; branch: Branch }
+  | {
+      type: PopupType.CantDeleteCurrentBranch
+      repository: Repository
+      branchToDelete: Branch
+      blockedByBranch: Branch
+    }
   | {
       type: PopupType.DeleteBranch
       repository: Repository
