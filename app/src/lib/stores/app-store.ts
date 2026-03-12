@@ -286,6 +286,7 @@ import {
 import { determineMergeability } from '../git/merge-tree'
 import { reorder } from '../git/reorder'
 import { squash } from '../git/squash'
+import { stageResolvedConflictFiles } from '../git/stage'
 import {
   createDesktopStashEntry,
   dropDesktopStashEntry,
@@ -4427,6 +4428,14 @@ export class AppStore extends TypedBaseStore<IAppState> {
         return repository
       }
     }
+
+    // Auto-stage resolved conflict files before checkout to prevent
+    // "error: you need to resolve your current index first"
+    await stageResolvedConflictFiles(
+      repository,
+      changesState.workingDirectory.files,
+      changesState.conflictState?.manualResolutions ?? new Map()
+    )
 
     return this.withRefreshedGitHubRepository(repository, repository => {
       // We always want to end with refreshing the repository regardless of

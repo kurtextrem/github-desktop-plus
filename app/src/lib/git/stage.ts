@@ -61,3 +61,37 @@ export async function stageManualConflictResolution(
       assertNever(chosen, 'unaccounted for git status entry possibility')
   }
 }
+
+/**
+ * Stages all resolved conflict files before a checkout operation to prevent
+ * "error: you need to resolve your current index first" from git.
+ *
+ * Handles two kinds of resolved conflicts:
+ *  - Text conflicts resolved in an external editor (conflictMarkerCount === 0)
+ *  - Manual conflicts where the user chose ours/theirs in the Desktop UI
+ */
+export async function stageResolvedConflictFiles(
+  repository: Repository,
+  files: ReadonlyArray<WorkingDirectoryFileChange>,
+  manualResolutions: ReadonlyMap<string, ManualConflictResolution>
+): Promise<void> {
+  for (const file of files) {
+    const { status } = file
+    if (!isConflictedFileStatus(status)) {
+      continue
+    }
+
+    const manualResolution = manualResolutions.get(file.path)
+
+    if (manualResolution !== undefined) {
+      // Binary/manual conflict resolved via Desktop UI — stage it
+      await stageManualConflictResolution(repository, file, manualResolution)
+    } else if (
+      isConflictWithMarkers(status) &&
+      status.conflictMarkerCount === 0
+    ) {
+      // Text conflict resolved in external editor — stage it
+      await addConflictedFile(repository, file)
+    }
+  }
+}
