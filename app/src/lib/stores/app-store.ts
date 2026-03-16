@@ -182,6 +182,10 @@ import {
   defaultShowBranchNameInRepoListSetting,
   ShowBranchNameInRepoListSetting,
 } from '../../models/show-branch-name-in-repo-list'
+import {
+  BranchSortOrder,
+  DEFAULT_BRANCH_SORT_ORDER,
+} from '../../models/branch-sort-order'
 import { WorkflowPreferences } from '../../models/workflow-preferences'
 import { TrashNameLabel } from '../../ui/lib/context-menu'
 import { getDefaultDir } from '../../ui/lib/default-dir'
@@ -494,6 +498,7 @@ export const showDiffCheckMarksDefault = true
 export const showDiffCheckMarksKey = 'diff-check-marks-visible'
 
 export const showBranchNameInRepoListKey = 'show-branch-name-in-repo-list'
+const branchSortOrderKey = 'branch-sort-order'
 
 const commitMessageGenerationDisclaimerLastSeenKey =
   'commit-message-generation-disclaimer-last-seen'
@@ -662,6 +667,8 @@ export class AppStore extends TypedBaseStore<IAppState> {
 
   private showBranchNameInRepoList: ShowBranchNameInRepoListSetting =
     defaultShowBranchNameInRepoListSetting
+
+  private branchSortOrder: BranchSortOrder = DEFAULT_BRANCH_SORT_ORDER
 
   private cachedRepoRulesets = new Map<number, IAPIRepoRuleset>()
 
@@ -1212,6 +1219,7 @@ export class AppStore extends TypedBaseStore<IAppState> {
       underlineLinks: this.underlineLinks,
       showDiffCheckMarks: this.showDiffCheckMarks,
       showBranchNameInRepoList: this.showBranchNameInRepoList,
+      branchSortOrder: this.branchSortOrder,
       updateState: updateStore.state,
       commitMessageGenerationDisclaimerLastSeen:
         this.commitMessageGenerationDisclaimerLastSeen,
@@ -2618,6 +2626,9 @@ export class AppStore extends TypedBaseStore<IAppState> {
     this.showBranchNameInRepoList =
       getEnum(showBranchNameInRepoListKey, ShowBranchNameInRepoListSetting) ??
       defaultShowBranchNameInRepoListSetting
+
+    this.branchSortOrder =
+      getEnum(branchSortOrderKey, BranchSortOrder) ?? DEFAULT_BRANCH_SORT_ORDER
 
     this.commitMessageGenerationDisclaimerLastSeen =
       getNumber(commitMessageGenerationDisclaimerLastSeenKey) ?? null
@@ -9198,6 +9209,14 @@ export class AppStore extends TypedBaseStore<IAppState> {
         showBranchNameInRepoListKey,
         showBranchNameInRepoList
       )
+      this.emitUpdate()
+    }
+  }
+
+  public _updateBranchSortOrder(branchSortOrder: BranchSortOrder) {
+    if (branchSortOrder !== this.branchSortOrder) {
+      this.branchSortOrder = branchSortOrder
+      localStorage.setItem(branchSortOrderKey, branchSortOrder)
       this.emitUpdate()
     }
   }

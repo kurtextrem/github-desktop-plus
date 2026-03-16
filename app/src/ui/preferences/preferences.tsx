@@ -24,6 +24,7 @@ import { ApplicationTheme } from '../lib/application-theme'
 import { TitleBarStyle } from '../lib/title-bar-style'
 import { OkCancelButtonGroup } from '../dialog/ok-cancel-button-group'
 import { Integrations } from './integrations'
+import { BranchSortOrder } from '../../models/branch-sort-order'
 import {
   UncommittedChangesStrategy,
   defaultUncommittedChangesStrategy,
@@ -95,6 +96,7 @@ interface IPreferencesProps {
   readonly showWorktrees: boolean
   readonly repositoryIndicatorsEnabled: boolean
   readonly showBranchNameInRepoList: ShowBranchNameInRepoListSetting
+  readonly branchSortOrder: BranchSortOrder
   readonly hideWindowOnQuit: boolean
   readonly onEditGlobalGitConfig: () => void
   readonly underlineLinks: boolean
@@ -147,6 +149,7 @@ interface IPreferencesState {
   readonly existingLockFilePath?: string
   readonly repositoryIndicatorsEnabled: boolean
   readonly showBranchNameInRepoList: ShowBranchNameInRepoListSetting
+  readonly branchSortOrder: BranchSortOrder
   readonly hideWindowOnQuit: boolean
 
   readonly initiallySelectedTheme: ApplicationTheme
@@ -223,6 +226,7 @@ export class Preferences extends React.Component<
       showWorktrees: this.props.showWorktrees,
       repositoryIndicatorsEnabled: this.props.repositoryIndicatorsEnabled,
       showBranchNameInRepoList: this.props.showBranchNameInRepoList,
+      branchSortOrder: this.props.branchSortOrder,
       hideWindowOnQuit: this.props.hideWindowOnQuit,
       initiallySelectedTheme: this.props.selectedTheme,
       initiallySelectedTabSize: this.props.selectedTabSize,
@@ -560,6 +564,8 @@ export class Preferences extends React.Component<
             onShowBranchNameInRepoListChanged={
               this.onShowBranchNameInRepoListChanged
             }
+            branchSortOrder={this.state.branchSortOrder}
+            onBranchSortOrderChanged={this.onBranchSortOrderChanged}
           />
         )
         break
@@ -811,6 +817,10 @@ export class Preferences extends React.Component<
     this.setState({ showBranchNameInRepoList })
   }
 
+  private onBranchSortOrderChanged = (branchSortOrder: BranchSortOrder) => {
+    this.setState({ branchSortOrder })
+  }
+
   private onSelectedTabSizeChanged = (tabSize: number) => {
     this.props.dispatcher.setSelectedTabSize(tabSize)
   }
@@ -1017,6 +1027,7 @@ export class Preferences extends React.Component<
     dispatcher.setDiffCheckMarksSetting(this.state.showDiffCheckMarks)
 
     dispatcher.setShowBranchNameInRepoList(this.state.showBranchNameInRepoList)
+    dispatcher.setBranchSortOrder(this.state.branchSortOrder)
 
     this.props.onDismissed()
   }

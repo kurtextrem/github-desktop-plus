@@ -1659,6 +1659,7 @@ export class App extends React.Component<IAppProps, IAppState> {
             underlineLinks={this.state.underlineLinks}
             showDiffCheckMarks={this.state.showDiffCheckMarks}
             showBranchNameInRepoList={this.state.showBranchNameInRepoList}
+            branchSortOrder={this.state.branchSortOrder}
           />
         )
       case PopupType.RepositorySettings: {
@@ -3457,6 +3458,7 @@ export class App extends React.Component<IAppProps, IAppState> {
         dispatcher={this.props.dispatcher}
         isOpen={isOpen}
         branchDropdownWidth={this.state.branchDropdownWidth}
+        branchSortOrder={this.state.branchSortOrder}
         onDropDownStateChanged={this.onBranchDropdownStateChanged}
         repository={repository}
         repositoryState={selection.state}
@@ -3635,6 +3637,7 @@ export class App extends React.Component<IAppProps, IAppState> {
           stashedFilesWidth={state.stashedFilesWidth}
           issuesStore={this.props.issuesStore}
           gitHubUserStore={this.props.gitHubUserStore}
+          branchSortOrder={state.branchSortOrder}
           onViewCommitOnGitHub={this.onViewCommitOnGitHub}
           imageDiffType={state.imageDiffType}
           hideWhitespaceInChangesDiff={state.hideWhitespaceInChangesDiff}

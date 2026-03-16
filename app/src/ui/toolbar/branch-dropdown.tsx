@@ -29,6 +29,7 @@ import { PopupType } from '../../models/popup'
 import { generateBranchContextMenuItems } from '../branches/branch-list-item-context-menu'
 import { showContextualMenu } from '../../lib/menu-item'
 import { Emoji } from '../../lib/emoji'
+import { BranchSortOrder } from '../../models/branch-sort-order'
 import { enableResizingToolbarButtons } from '../../lib/feature-flag'
 
 interface IBranchDropdownProps {
@@ -45,6 +46,8 @@ interface IBranchDropdownProps {
 
   /** Whether or not the branch dropdown is currently open */
   readonly isOpen: boolean
+
+  readonly branchSortOrder: BranchSortOrder
 
   /**
    * An event handler for when the drop down is opened, or closed, by a pointer
@@ -112,6 +115,7 @@ export class BranchDropdown extends React.Component<IBranchDropdownProps> {
         pullRequests={this.props.pullRequests}
         currentPullRequest={this.props.currentPullRequest}
         isLoadingPullRequests={this.props.isLoadingPullRequests}
+        branchSortOrder={this.props.branchSortOrder}
         emoji={this.props.emoji}
         onDeleteBranch={this.onDeleteBranch}
         onRenameBranch={this.onRenameBranch}

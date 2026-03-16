@@ -14,6 +14,8 @@ import { tabSizeDefault } from '../../lib/stores/app-store'
 import { Checkbox, CheckboxValue } from '../lib/checkbox'
 import { ShowBranchNameInRepoListSetting } from '../../models/show-branch-name-in-repo-list'
 import { parseEnumValue } from '../../lib/enum'
+import { assertNever } from '../../lib/fatal-error'
+import { BranchSortOrder } from '../../models/branch-sort-order'
 
 interface IAppearanceProps {
   readonly selectedTheme: ApplicationTheme
@@ -30,6 +32,8 @@ interface IAppearanceProps {
   readonly onShowBranchNameInRepoListChanged: (
     value: ShowBranchNameInRepoListSetting
   ) => void
+  readonly branchSortOrder: BranchSortOrder
+  readonly onBranchSortOrderChanged: (sortOrder: BranchSortOrder) => void
 }
 
 interface IAppearanceState {
@@ -231,6 +235,45 @@ export class Appearance extends React.Component<
     }
   }
 
+  private onBranchSortOrderChanged = (branchSortOrder: BranchSortOrder) => {
+    this.props.onBranchSortOrderChanged(branchSortOrder)
+  }
+
+  private renderBranchSortOrder() {
+    const { branchSortOrder } = this.props
+
+    return (
+      <div className="advanced-section">
+        <h2 id="branch-sort-order-heading">Sort branches</h2>
+
+        <RadioGroup<BranchSortOrder>
+          ariaLabelledBy="branch-sort-order-heading"
+          selectedKey={branchSortOrder}
+          radioButtonKeys={[
+            BranchSortOrder.Alphabetical,
+            BranchSortOrder.LastModified,
+          ]}
+          onSelectionChanged={this.onBranchSortOrderChanged}
+          renderRadioButtonLabelContents={this.renderBranchSortOptionLabel}
+        />
+      </div>
+    )
+  }
+
+  private renderBranchSortOptionLabel = (branchSortOrder: BranchSortOrder) => {
+    switch (branchSortOrder) {
+      case BranchSortOrder.Alphabetical:
+        return 'Alphabetical'
+      case BranchSortOrder.LastModified:
+        return 'Last modified'
+      default:
+        return assertNever(
+          branchSortOrder,
+          `Unknown branch sort order: ${branchSortOrder}`
+        )
+    }
+  }
+
   private renderRepositoryList() {
     return (
       <div className="advanced-section">
@@ -303,6 +346,7 @@ export class Appearance extends React.Component<
       <DialogContent>
         {this.renderSelectedTheme()}
         {this.renderRepositoryList()}
+        {this.renderBranchSortOrder()}
         {this.renderWorktreeVisibility()}
         {this.renderSelectedTabSize()}
         {this.renderTitleBarStyleDropdown()}

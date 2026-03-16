@@ -59,6 +59,11 @@ interface IBranchListProps {
   readonly allWorktrees: ReadonlyArray<WorktreeEntry>
 
   /**
+   * The sort order for branch lists in the current user preferences.
+   */
+  readonly branchSortOrder?: BranchSortOrder
+
+  /**
    * The currently selected branch in the list, see the onSelectionChanged prop.
    */
   readonly selectedBranch: Branch | null
@@ -179,7 +184,7 @@ export class BranchList extends React.Component<IBranchListProps> {
       this.props.allBranches,
       this.props.recentBranches,
       this.props.allWorktrees,
-      BranchSortOrder.LastModified
+      this.props.branchSortOrder ?? BranchSortOrder.LastModified
     )
   }
 

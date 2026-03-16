@@ -103,6 +103,7 @@ import {
 } from '../../lib/stores/commit-status-store'
 import { MergeTreeResult } from '../../models/merge'
 import { UncommittedChangesStrategy } from '../../models/uncommitted-changes-strategy'
+import { BranchSortOrder } from '../../models/branch-sort-order'
 import { ShowBranchNameInRepoListSetting } from '../../models/show-branch-name-in-repo-list'
 import { IStashEntry } from '../../models/stash-entry'
 import { WorkflowPreferences } from '../../models/workflow-preferences'
@@ -4201,6 +4202,10 @@ export class Dispatcher {
     return this.appStore._updateShowBranchNameInRepoList(
       showBranchNameInRepoList
     )
+  }
+
+  public setBranchSortOrder(branchSortOrder: BranchSortOrder) {
+    return this.appStore._updateBranchSortOrder(branchSortOrder)
   }
 
   public testPruneBranches() {

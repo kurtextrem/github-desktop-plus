@@ -24,6 +24,7 @@ import { Button } from '../lib/button'
 import { BranchList } from './branch-list'
 import { PullRequestList } from './pull-request-list'
 import { IBranchListItem } from './group-branches'
+import { BranchSortOrder } from '../../models/branch-sort-order'
 import {
   getDefaultAriaLabelForBranch,
   renderDefaultBranch,
@@ -52,6 +53,8 @@ interface IBranchesContainerProps {
   readonly onRenameBranch: (branchName: string) => void
   readonly onSetAsDefaultBranch: (branchName: string) => void
   readonly onDeleteBranch: (branchName: string) => void
+
+  readonly branchSortOrder: BranchSortOrder
 
   /** All worktrees in the repository. */
   readonly allWorktrees: ReadonlyArray<WorktreeEntry>
@@ -272,6 +275,7 @@ export class BranchesContainer extends React.Component<
             currentBranch={this.props.currentBranch}
             allBranches={this.props.allBranches}
             recentBranches={this.props.recentBranches}
+            branchSortOrder={this.props.branchSortOrder}
             allWorktrees={this.props.allWorktrees}
             onItemClick={this.onBranchItemClick}
             filterText={this.state.branchFilterText}

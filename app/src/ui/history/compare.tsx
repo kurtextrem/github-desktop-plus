@@ -29,6 +29,7 @@ import { DragType } from '../../models/drag-drop'
 import { PopupType } from '../../models/popup'
 import { getUniqueCoauthorsAsAuthors } from '../../lib/unique-coauthors-as-authors'
 import { getSquashedCommitDescription } from '../../lib/squash/squashed-commit-description'
+import { BranchSortOrder } from '../../models/branch-sort-order'
 import { doMergeCommitsExistAfterCommit } from '../../lib/git'
 import { KeyboardInsertionData } from '../lib/list'
 import { Account } from '../../models/account'
@@ -47,6 +48,7 @@ interface ICompareSidebarProps {
   readonly dispatcher: Dispatcher
   readonly currentBranch: Branch | null
   readonly selectedCommitShas: ReadonlyArray<string>
+  readonly branchSortOrder: BranchSortOrder
   readonly onRevertCommit: (commit: Commit) => void
   readonly onAmendCommit: (commit: Commit, isLocalCommit: boolean) => void
   readonly onViewCommitOnGitHub: (sha: string) => void
@@ -413,6 +415,7 @@ export class CompareSidebar extends React.Component<
         allBranches={branches}
         recentBranches={recentBranches}
         allWorktrees={[]}
+        branchSortOrder={this.props.branchSortOrder}
         filterText={filterText}
         textbox={this.textbox!}
         selectedBranch={this.state.focusedBranch}
