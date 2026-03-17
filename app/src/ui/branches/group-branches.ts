@@ -1,4 +1,5 @@
 import { Branch } from '../../models/branch'
+import { BranchSortOrder } from '../../models/branch-sort-order'
 import { WorktreeEntry } from '../../models/worktree'
 import { IFilterListGroup, IFilterListItem } from '../lib/filter-list'
 
@@ -35,10 +36,10 @@ function findWorktreeForBranch(
 
 export function groupBranches(
   defaultBranch: Branch | null,
-  currentBranch: Branch | null,
   allBranches: ReadonlyArray<Branch>,
   recentBranches: ReadonlyArray<Branch>,
-  allWorktrees: ReadonlyArray<WorktreeEntry>
+  allWorktrees: ReadonlyArray<WorktreeEntry>,
+  sortOrder: BranchSortOrder
 ): ReadonlyArray<IFilterListGroup<IBranchListItem>> {
   const groups = new Array<IFilterListGroup<IBranchListItem>>()
 
@@ -91,8 +92,13 @@ export function groupBranches(
       !recentBranchNames.has(b.name) &&
       !b.isDesktopForkRemoteBranch
   )
+  const branchComparer = getBranchComparer(sortOrder)
+  const sortedRemainingBranches = remainingBranches.sort((a, b) =>
+    // Local branches are always sorted above remote branches, regardless of the sort order
+    a.type === b.type ? branchComparer(a, b) : a.type - b.type
+  )
 
-  const remainingItems = remainingBranches.map(b => {
+  const remainingItems = sortedRemainingBranches.map(b => {
     const worktreeInUse = findWorktreeForBranch(b.name, allWorktrees)
     return {
       text: [b.name],
@@ -107,4 +113,15 @@ export function groupBranches(
   })
 
   return groups
+}
+
+function getBranchComparer(
+  sortOrder: BranchSortOrder
+): (a: Branch, b: Branch) => number {
+  switch (sortOrder) {
+    case BranchSortOrder.Alphabetical:
+      return (a, b) => a.name.localeCompare(b.name)
+    case BranchSortOrder.LastModified:
+      return (a, b) => b.tip.author.date.getTime() - a.tip.author.date.getTime()
+  }
 }

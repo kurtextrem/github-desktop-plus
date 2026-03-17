@@ -26,6 +26,7 @@ import * as octicons from '../octicons/octicons.generated'
 import memoizeOne from 'memoize-one'
 import { Repository } from '../../models/repository'
 import { formatDate } from '../../lib/format-date'
+import { BranchSortOrder } from '../../models/branch-sort-order'
 
 const RowHeight = 30
 
@@ -175,10 +176,10 @@ export class BranchList extends React.Component<IBranchListProps> {
   private get groups() {
     return this.getGroups(
       this.props.defaultBranch,
-      this.props.currentBranch,
       this.props.allBranches,
       this.props.recentBranches,
-      this.props.allWorktrees
+      this.props.allWorktrees,
+      BranchSortOrder.LastModified
     )
   }
 

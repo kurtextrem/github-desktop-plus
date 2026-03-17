@@ -3,6 +3,7 @@ import assert from 'node:assert'
 import { groupBranches } from '../../src/ui/branches'
 import { Branch, BranchType } from '../../src/models/branch'
 import { CommitIdentity } from '../../src/models/commit-identity'
+import { BranchSortOrder } from '../../src/models/branch-sort-order'
 
 describe('Branches grouping', () => {
   const author = new CommitIdentity('Hubot', 'hubot@github.com', new Date())
@@ -52,10 +53,10 @@ describe('Branches grouping', () => {
   it('should group branches', () => {
     const groups = groupBranches(
       defaultBranch,
-      currentBranch,
       allBranches,
       recentBranches,
-      []
+      [],
+      BranchSortOrder.Alphabetical
     )
     assert.equal(groups.length, 3)
 
